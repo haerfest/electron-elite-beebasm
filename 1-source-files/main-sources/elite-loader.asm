@@ -72,7 +72,7 @@
  OSWORD = &FFF1         \ The address for the OSWORD routine
  OSCLI = &FFF7          \ The address for the OSCLI routine
 
- BANK = 4               \ SWRAM bank to use
+ BANK = 0               \ SWRAM bank to use, must be 0 due to a bug in the OS
  
 \ ******************************************************************************
 \
