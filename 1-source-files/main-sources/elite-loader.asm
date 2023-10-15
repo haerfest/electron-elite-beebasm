@@ -72,6 +72,8 @@
  OSWORD = &FFF1         \ The address for the OSWORD routine
  OSCLI = &FFF7          \ The address for the OSCLI routine
 
+ BANK = 4               \ SWRAM bank to use
+ 
 \ ******************************************************************************
 \
 \       Name: ZP
@@ -966,7 +968,7 @@ ENDMACRO
 \
 \ ******************************************************************************
 
- JMP &0B11              \ Call relocated UU% routine to load the main game code
+ JMP &0B00              \ Call relocated UU% routine to load the main game code
                         \ at &2000, move it down to &0D00 and run it
 
  NOP                    \ This part of the loader has been disabled by the
@@ -1851,13 +1853,25 @@ ENDMACRO
 \
 \ ******************************************************************************
 
- EQUD &10101010         \ This data appears to be unused
- EQUD &10101010
- EQUD &10101010
- EQUD &10101010
- EQUB &10
-
 .ENTRY2
+
+ LDA #&0C               \ Page BASIC out and SWRAM bank 'BANK' in
+ JSR VIA05
+ LDA #BANK
+ JSR VIA05
+
+ LDX #LO(MESS1)         \ Set (Y X) to point to MESS1 ("LOAD EliteCp FFFF2000")
+ LDY #HI(MESS1)
+
+ JSR OSCLI              \ Call OSCLI to run the OS command in MESS1, which loads
+                        \ the SWRAM game code at location &2000
+
+ LDX #&01               \ Copy one page from &2000 to SWRAM at &8000
+ LDA #&20
+ LDY #&80
+ JSR copy
+
+ DEC MESS1+11           \ Change EliteCp into EliteCo
 
  LDX #LO(MESS1)         \ Set (Y X) to point to MESS1 ("LOAD EliteCo FFFF2000")
  LDY #HI(MESS1)
@@ -1889,34 +1903,9 @@ ENDMACRO
                         \ game code from where we just loaded it at &2000, down
                         \ to &0D00 where we will run it
 
- LDY #0                 \ Set the source and destination addresses for the copy:
- STY ZP                 \
- STY P                  \   ZP(1 0) = L% = &2000
- LDA #HI(L%)            \   P(1 0) = C% = &0D00
- STA ZP+1               \
- LDA #HI(C%)            \ and set Y = 0 to act as a byte counter in the
- STA P+1                \ following loop
-
-.MVDL
-
- LDA (ZP),Y             \ Copy the Y-th byte from the source to the Y-th byte of
- STA (P),Y              \ the destination
-
- LDA #0                 \ Zero the source byte we just copied, so that this loop
- STA (ZP),Y             \ moves the memory block rather than copying it
-
- INY                    \ Increment the byte counter
-
- BNE MVDL               \ Loop back until we have copied a whole page of bytes
-
- INC ZP+1               \ Increment the high bytes of ZP(1 0) and P(1 0) so we
- INC P+1                \ copy bytes from the next page in memory
-
- DEX                    \ Decrement the page counter in X
-
- BPL MVDL               \ Loop back to move the next page of bytes until we have
-                        \ moved the number of pages in X (this also sets X to
-                        \ &FF)
+ LDA #HI(L%)            \ Copy from L% to C%
+ LDY #HI(C%)
+ JSR copy
 
  SEI                    \ Disable all interrupts
 
@@ -1959,12 +1948,8 @@ ENDMACRO
  LDA S%+13
  STA IRQ1V+1
 
- LDA #%11111100         \ Clear all interrupts (bits 4-7) and de-select the
- JSR VIA05              \ BASIC ROM (bit 3) by setting the interrupt clear and
-                        \ paging register at SHEILA &05
-
- LDA #%00001000         \ Select ROM 8 (the keyboard) by setting the interrupt
- JSR VIA05              \ clear and paging register at SHEILA &05
+ LDA #&F0 OR BANK       \ Clear all interrupts (bits 4-7) by setting the
+ JSR VIA05              \ interrupt clear and  paging register at SHEILA &05
 
  LDA #&60               \ Set the screen start address registers at SHEILA &02
  STA VIA+&02            \ and SHEILA &03 so screen memory starts at &7EC0. This
@@ -1988,6 +1973,34 @@ ENDMACRO
 
  RTS                    \ Return from the subroutine
 
+.copy
+
+ STA ZP+1               \ Set the source and destination addresses for the copy:
+ STY P+1                \
+ LDY #0                 \   ZP(1 0) = source = A
+ STY ZP                 \   P(1 0) = destination = Y
+ STY P                  \
+                        \ and set Y = 0 to act as a byte counter in the
+                        \ following loop
+.MVDL
+
+ LDA (ZP),Y             \ Copy the Y-th byte from the source to the Y-th byte of
+ STA (P),Y              \ the destination
+
+ INY                    \ Increment the byte counter
+
+ BNE MVDL               \ Loop back until we have copied a whole page of bytes
+
+ INC ZP+1               \ Increment the high bytes of ZP(1 0) and P(1 0) so we
+ INC P+1                \ copy bytes from the next page in memory
+
+ DEX                    \ Decrement the page counter in X
+
+ BPL MVDL               \ Loop back to move the next page of bytes until we have
+                        \ moved the number of pages in X (this also sets X to
+                        \ &FF)
+ RTS
+
 \ ******************************************************************************
 \
 \       Name: MESS1
@@ -1999,10 +2012,10 @@ ENDMACRO
 
 .MESS1
 
- EQUS "LOAD EliteCo FFFF2000"
+ EQUS "LOAD EliteCp FFFF2000"
  EQUB 13
 
- SKIP 13                \ These bytes appear to be unused
+ ASSERT P% - ENTRY2 <= &100
 
 \ ******************************************************************************
 \

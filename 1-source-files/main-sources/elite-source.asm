@@ -3132,11 +3132,13 @@ ENDMACRO
                         \ interrupt routine at IRQ1 is called, but it is never
                         \ read anywhere, so presumably it isn't actually used
 
- EQUW TT170             \ The entry point for the main game; once the main code
+\EQUW TT170             \ The entry point for the main game; once the main code
                         \ has been loaded, decrypted and moved to the right
                         \ place by elite-loader.asm, the game is started by a
                         \ JMP (S%+8) instruction, which jumps to the main entry
                         \ point at TT170 via this location
+
+ EQUW HICODE
 
  EQUW TT26              \ WRCHV is set to point here by elite-loader.asm
 
@@ -35193,3 +35195,64 @@ ENDMACRO
 
  PRINT "S.SHIPS ", ~CODE_SHIPS%, " ", ~P%, " ", ~LOAD%, " ", ~LOAD_SHIPS%
  SAVE "3-assembled-output/SHIPS.bin", CODE_SHIPS%, P%, LOAD%
+
+\ ******************************************************************************
+\
+\ ELITE H FILE
+\
+\ Produces the binary file ELTH.bin
+\
+\ ******************************************************************************
+
+ CODE_H% = &8000
+ LOAD_H% = CODE_H%
+
+ ORG CODE_H%
+
+ GUARD &C000            \ Guard against assembling over MOS
+
+\ ******************************************************************************
+\
+\       Name: HICODE
+\       Type: 
+\   Category: 
+\    Summary: 
+\
+\ ******************************************************************************
+
+.HICODE
+
+ LDX #0
+
+.loop
+
+ LDA greeting,X
+ BEQ done
+ JSR &FFEE
+ INX
+ JMP loop
+
+.done
+
+ JMP done
+
+.greeting
+
+ EQUB 7
+ EQUS "Hello, world!"
+ EQUB 0
+
+\ ******************************************************************************
+\
+\ Save ELTH.bin
+\
+\ ******************************************************************************
+
+ PRINT "ELITE H"
+ PRINT "Assembled at ", ~CODE_H%
+ PRINT "Ends at ", ~P%
+ PRINT "Code size is ", ~(P% - CODE_H%)
+ PRINT "Execute at ", ~LOAD_H%
+
+ PRINT "S.ELTH ", ~CODE_H%, " ", ~P%, " ", ~LOAD_H%, " ", ~LOAD_H%
+ SAVE "3-assembled-output/ELTH.bin", CODE_H%, P%, LOAD_H%
