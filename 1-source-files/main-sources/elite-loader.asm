@@ -1866,7 +1866,7 @@ ENDMACRO
  JSR OSCLI              \ Call OSCLI to run the OS command in MESS1, which loads
                         \ the SWRAM game code at location &2000
 
- LDX #&01               \ Copy one page from &2000 to SWRAM at &8000
+ LDX #&40               \ Copy 16 Kb from &2000 to SWRAM at &8000
  LDA #&20
  LDY #&80
  JSR copy
