@@ -1949,7 +1949,7 @@ ENDMACRO
  STA IRQ1V+1
 
  LDA #&F0 OR BANK       \ Clear all interrupts (bits 4-7) by setting the
- JSR VIA05              \ interrupt clear and  paging register at SHEILA &05
+ STA VIA+&05            \ interrupt clear and paging register at SHEILA &05
 
  LDA #&60               \ Set the screen start address registers at SHEILA &02
  STA VIA+&02            \ and SHEILA &03 so screen memory starts at &7EC0. This
