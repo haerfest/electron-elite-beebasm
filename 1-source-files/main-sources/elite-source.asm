@@ -3316,18 +3316,19 @@ ENDMACRO
 .IRQ1
 
  LDA S%+6               \ Flip all the bits in S%+6 so it toggled between 0 and
- EOR #%11111111         \ &FF on each call to this routine (though S%+6 is
- STA S%+6               \ never read, so this doesn't seem to have any effect)
+ EOR #%11111111         \ &FF on each call to this routine so we can skip every
+ STA S%+6               \ other interrupt (RTC or screen)
 
  ORA KEYB               \ If we are currently reading from the keyboard with an
  BMI jvec               \ OS command (OSWORD or OSRDCH) then KEYB will be &FF
                         \ rather than 0, so this jumps to jvec if we are already
                         \ reading the keyboard with an OS command
 
- LDA VIA+&05            \ If we get here then we are not already reading the
- ORA #%00100000         \ keyboard using an OS command, so set bit 5 of the
+ LDA &F4                \ If we get here then we are not already reading the
+ ORA #%00110000         \ keyboard using an OS command, so set bits 5 and 6 of the
  STA VIA+&05            \ interrupt clear and paging register at SHEILA &05 to
-                        \ clear the RTC interrupt
+                        \ clear the RTC and screen interrupts, whichever is
+                        \ pending
 
  LDA &FC                \ Restore the value of A from before the call to the
                         \ interrupt handler (the MOS stores the value of A in
