@@ -27,13 +27,7 @@
 \
 \   * ELTA.bin
 \   * ELTB.bin
-\   * ELTC.bin
-\   * ELTD.bin
-\   * ELTE.bin
-\   * ELTF.bin
-\   * ELTG.bin
 \   * SHIPS.bin
-\   * WORDS9.bin
 \
 \ ******************************************************************************
 
@@ -69,31 +63,6 @@
 
  PRINT "eliteb = ", ~P%
  INCBIN "3-assembled-output/ELTB.bin"
-
-.elitec
-
- PRINT "elitec = ", ~P%
- INCBIN "3-assembled-output/ELTC.bin"
-
-.elited
-
- PRINT "elited = ", ~P%
- INCBIN "3-assembled-output/ELTD.bin"
-
-.elitee
-
- PRINT "elitee = ", ~P%
- INCBIN "3-assembled-output/ELTE.bin"
-
-.elitef
-
- PRINT "elitef = ", ~P%
- INCBIN "3-assembled-output/ELTF.bin"
-
-.eliteg
-
- PRINT "eliteg = ", ~P%
- INCBIN "3-assembled-output/ELTG.bin"
 
 .checksum0
 

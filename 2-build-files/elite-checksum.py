@@ -37,7 +37,7 @@ eliteb_offset = 0
 
 # Append all assembled code files
 
-elite_names = ("ELTA", "ELTB", "ELTC", "ELTD", "ELTE", "ELTF", "ELTG")
+elite_names = ("ELTA", "ELTB")
 
 for file_name in elite_names:
     print(str(len(data_block)), file_name)
@@ -79,20 +79,22 @@ ships_file.close()
 
 print("3-assembled-output/SHIPS.bin file read")
 
-# Calculate checksum0
+# Disabled for the SWRAM version
+if False:
+    # Calculate checksum0
 
-checksum0 = 0
-for n in range(0x0, 0x4600):
-    checksum0 += data_block[n + 0x28]
+    checksum0 = 0
+    for n in range(0x0, 0x4600):
+        checksum0 += data_block[n + 0x28]
 
-# This is an unprotected version, so let's just hard-code the checksum
-# to the the value from the extracted binary
-checksum0 = 0x67
+    # This is an unprotected version, so let's just hard-code the checksum
+    # to the the value from the extracted binary
+    checksum0 = 0x67
 
-print("checksum 0 = ", hex(checksum0))
+    print("checksum 0 = ", hex(checksum0))
 
-if Encrypt:
-    data_block[checksum0_offset] = checksum0 % 256
+    if Encrypt:
+        data_block[checksum0_offset] = checksum0 % 256
 
 # Write output file for ELITECO
 
