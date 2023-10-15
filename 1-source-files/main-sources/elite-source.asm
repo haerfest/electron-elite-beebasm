@@ -3315,6 +3315,7 @@ ENDMACRO
 
 .IRQ1
 
+IF FALSE
  LDA S%+6               \ Flip all the bits in S%+6 so it toggled between 0 and
  EOR #%11111111         \ &FF on each call to this routine so we can skip every
  STA S%+6               \ other interrupt (RTC or screen)
@@ -3340,8 +3341,26 @@ ENDMACRO
 
 .jvec
 
+ENDIF
+
+ LDA #HI(POSTIRQ)       \ Push on the stack what an RTI would expect so that the
+ PHA                    \ RTI in the OS's IRQ handler takes us to POSTIRQ
+ LDA #LO(POSTIRQ)
+ PHA
+ PHP
+
  JMP (S%+2)             \ Jump to the original value of IRQ1V to process the
                         \ interrupt as normal
+.POSTIRQ
+
+ SEI
+ PHA
+ LDA &F4                \ Ensure the right ROM is paged in after an IRQ, to
+ STA &FE05              \ work around a bug in the OS's IRQ handler which
+ PLA                    \ returns with ROM #0 paged when both the keyboard
+ CLI                    \ and the 100 Hz poll service call are disabled
+
+ RTI                    \ Let's RTI once more
 
 \ ******************************************************************************
 \
