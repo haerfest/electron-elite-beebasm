@@ -1162,10 +1162,13 @@ ENDMACRO
                         \ handler (this has nothing to do with drawing Saturn,
                         \ it's all part of the copy protection)
 
+IF FALSE
+
  LDX #&60               \ This is normally part of the copy protection, but it's
  STX &0087              \ been disabled in this unprotected version so this has
                         \ no effect (though the crackers presumably thought they
                         \ might as well still set the value just in case)
+ENDIF
 
                         \ The following loop iterates CNT2(1 0) times, i.e. &1DD
                         \ or 477 times, and draws the background stars on the
@@ -1958,8 +1961,8 @@ ENDIF
  LDA S%+13
  STA IRQ1V+1
 
- LDA &F4                \ Clear all interrupts (bits 4-7) by setting the
- ORA #&F0               \ interrupt clear and paging register at SHEILA &05
+ LDA ZP_SWRAM_BANK      \ Clear all interrupts (bits 4-7) by setting the
+ ORA #%11110000         \ interrupt clear and paging register at SHEILA &05
  STA VIA+&05
 
  LDA #&60               \ Set the screen start address registers at SHEILA &02
