@@ -1860,6 +1860,7 @@ ENDMACRO
  LDA #&0C               \ Page BASIC out and the right SWRAM bank in
  JSR VIA05
  LDA SWRAM_BANK
+ STA S%+0               \ Set S%+0 to the SWRAM bank to use
  JSR VIA05
 
  LDX #LO(MESS1)         \ Set (Y X) to point to MESS1 ("LOAD EliteCp FFFF2000")

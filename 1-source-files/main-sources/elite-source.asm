@@ -2286,11 +2286,9 @@ ENDMACRO
 
 .S%
 
- NOP                    \ The S% workspace lives at &0D00, which is the NMI
-                        \ workspace. We claimed the NMI workspace for our own
-                        \ use as part of the loading process, and the RTI makes
-                        \ sure we return from any spurious NMIs that still call
-                        \ this location
+.SWRAM_BANK
+
+ EQUB 0                 \ Gets set to the SWRAM bank to use by the loader
 
 .KEYB
 
@@ -5585,6 +5583,13 @@ ENDMACRO
 \ ******************************************************************************
 
 .BR1
+
+ LDA #&0C               \ Make sure our SWRAM bank is paged in before we
+ STA &F4                \ call any code
+ STA &FE05
+ LDA SWRAM_BANK
+ STA &F4
+ STA &FE05
 
  LDX #3                 \ Set XC = 3 (set text cursor to column 3)
  STX XC
