@@ -7281,6 +7281,7 @@ ENDMACRO
 \
 \       Name: WP
 \       Type: Workspace
+\    Address: &0BE0 to &0CF3
 \   Category: Workspaces
 \    Summary: Ship slots, variables
 \
@@ -29065,11 +29066,19 @@ IF TRUE
 
  LDX #&82               \ Point X to page &82
 
-ELSE
+ JSR ZES1               \ Call ZES1 to zero-fill the page in X
 
- LDX #&B                \ Point X to page &B
+ DEX                    \ Decrement X to point to the next page (&81)
+
+ JSR ZES1               \ Call ZES1 to zero-fill the page in X
+
+ DEX                    \ Decrement X to point to the next page (&80)
+
+ JSR ZES1               \ Call ZES1 to zero-fill the page in X
 
 ENDIF
+
+ LDX #&B                \ Point X to page &B
 
  JSR ZES1               \ Call ZES1 to zero-fill the page in X
 
