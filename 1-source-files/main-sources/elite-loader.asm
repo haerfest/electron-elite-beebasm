@@ -154,7 +154,7 @@
 
  SKIP 2                 \ Gets set to &03C2 as part of the obfuscation code
 
-.SWRAM_BANK
+.ZP_SWRAM_BANK
 
  SKIP 1
 
@@ -1859,7 +1859,7 @@ ENDMACRO
 
  LDA #&0C               \ Page BASIC out and the right SWRAM bank in
  JSR VIA05
- LDA SWRAM_BANK
+ LDA ZP_SWRAM_BANK
  STA S%+0               \ Set S%+0 to the SWRAM bank to use
  JSR VIA05
 
@@ -1902,7 +1902,7 @@ ENDIF
  JSR OSBYTE             \ space to clear it out
 
  LDA #&40               \ Set S% to an RTI instruction (opcode &40), so we can
- STA S%                 \ claim the NMI workspace at &0D00 (the RTI makes sure
+ STA &0D00              \ claim the NMI workspace at &0D00 (the RTI makes sure
                         \ we return from any spurious NMIs that still call this
                         \ workspace)
 
