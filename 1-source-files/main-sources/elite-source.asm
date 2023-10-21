@@ -39,7 +39,7 @@
 \
 \ ******************************************************************************
 
- Q% = _REMOVE_CHECKSUMS \ Set Q% to TRUE to max out the default commander, FALSE
+ Q% = _MAXED_OUT        \ Set Q% to TRUE to max out the default commander, FALSE
                         \ for the standard default commander (this is set to
                         \ TRUE if checksums are disabled, just for convenience)
 
@@ -2391,7 +2391,7 @@ ENDMACRO
 
 .jvec
 
-IF _PAGING_FIX = TRUE
+IF _PAGING_WORKAROUND = TRUE
 
  LDA #HI(POSTIRQ)       \ Push on the stack what an RTI would expect so that the
  PHA                    \ RTI in the OS's IRQ handler takes us to POSTIRQ
@@ -2403,7 +2403,7 @@ ENDIF
 
  JMP (S%+2)             \ Jump to the original value of IRQ1V to process the
                         \ interrupt as normal
-IF _PAGING_FIX = TRUE
+IF _PAGING_WORKAROUND = TRUE
 
 .POSTIRQ
 

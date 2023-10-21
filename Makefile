@@ -16,14 +16,16 @@ PYTHON?=python
 variant-electron=1
 folder-electron=/egg
 suffix-electron=-egg
-paging-fix=TRUE
+paging-workaround=TRUE
+maxed_out=FALSE
 
 .PHONY:build
 build:
 	echo _VERSION=5 > 1-source-files/main-sources/elite-build-options.asm
 	echo _VARIANT=$(variant-electron) >> 1-source-files/main-sources/elite-build-options.asm
 	echo _REMOVE_CHECKSUMS=TRUE >> 1-source-files/main-sources/elite-build-options.asm
-	echo _PAGING_FIX=$(paging-fix) >> 1-source-files/main-sources/elite-build-options.asm
+	echo _PAGING_WORKAROUND=$(paging-workaround) >> 1-source-files/main-sources/elite-build-options.asm
+	echo _MAXED_OUT=$(maxed_out) >> 1-source-files/main-sources/elite-build-options.asm
 	$(BEEBASM) -i 1-source-files/main-sources/elite-source.asm -v > 3-assembled-output/compile.txt
 	$(BEEBASM) -i 1-source-files/main-sources/elite-bcfs.asm -v >> 3-assembled-output/compile.txt
 	$(BEEBASM) -i 1-source-files/main-sources/elite-loader.asm -v >> 3-assembled-output/compile.txt
@@ -36,7 +38,8 @@ encrypt:
 	echo _VERSION=5 > 1-source-files/main-sources/elite-build-options.asm
 	echo _VARIANT=$(variant-electron) >> 1-source-files/main-sources/elite-build-options.asm
 	echo _REMOVE_CHECKSUMS=FALSE >> 1-source-files/main-sources/elite-build-options.asm
-	echo _PAGING_FIX=$(paging-fix) >> 1-source-files/main-sources/elite-build-options.asm
+	echo _PAGING_WORKAROUND=$(paging-workaround) >> 1-source-files/main-sources/elite-build-options.asm
+	echo _MAXED_OUT=$(maxed_out) >> 1-source-files/main-sources/elite-build-options.asm
 	$(BEEBASM) -i 1-source-files/main-sources/elite-source.asm -v > 3-assembled-output/compile.txt
 	$(BEEBASM) -i 1-source-files/main-sources/elite-bcfs.asm -v >> 3-assembled-output/compile.txt
 	$(BEEBASM) -i 1-source-files/main-sources/elite-loader.asm -v >> 3-assembled-output/compile.txt
