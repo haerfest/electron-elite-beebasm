@@ -72,8 +72,6 @@
  OSWORD = &FFF1         \ The address for the OSWORD routine
  OSCLI = &FFF7          \ The address for the OSCLI routine
 
- BANK = 0               \ SWRAM bank to use, must be 0 due to a bug in the OS
- 
 \ ******************************************************************************
 \
 \       Name: ZP
@@ -1855,9 +1853,9 @@ ENDMACRO
 
 .ENTRY2
 
- LDA #&0C               \ Page BASIC out and SWRAM bank 'BANK' in
+ LDA #&0C               \ Page BASIC out and the right SWRAM bank in
  JSR VIA05
- LDA #BANK
+ LDA #_SWRAM_BANK
  JSR VIA05
 
  LDX #LO(MESS1)         \ Set (Y X) to point to MESS1 ("LOAD EliteCp FFFF2000")
@@ -1948,7 +1946,8 @@ ENDMACRO
  LDA S%+13
  STA IRQ1V+1
 
- LDA #&F0 OR BANK       \ Clear all interrupts (bits 4-7) by setting the
+                        \ Clear all interrupts (bits 4-7) by setting the
+ LDA #&F0 OR _SWRAM_BANK
  STA VIA+&05            \ interrupt clear and paging register at SHEILA &05
 
  LDA #&60               \ Set the screen start address registers at SHEILA &02

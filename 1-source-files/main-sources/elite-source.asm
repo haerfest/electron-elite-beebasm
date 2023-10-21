@@ -2377,8 +2377,9 @@ ENDMACRO
                         \ rather than 0, so this jumps to jvec if we are already
                         \ reading the keyboard with an OS command
 
- LDA &F4                \ If we get here then we are not already reading the
- ORA #%00110000         \ keyboard using an OS command, so set bits 5 and 6 of the
+                        \ If we get here then we are not already reading the
+                        \ keyboard using an OS command, so set bits 5 and 6 of the
+ ORA #%00110000 OR _SWRAM_BANK
  STA VIA+&05            \ interrupt clear and paging register at SHEILA &05 to
                         \ clear the RTC and screen interrupts, whichever is
                         \ pending
@@ -2393,24 +2394,32 @@ ENDMACRO
 
 .jvec
 
+IF _PAGING_FIX = TRUE
+
  LDA #HI(POSTIRQ)       \ Push on the stack what an RTI would expect so that the
  PHA                    \ RTI in the OS's IRQ handler takes us to POSTIRQ
  LDA #LO(POSTIRQ)
  PHA
  PHP
 
+ENDIF
+
  JMP (S%+2)             \ Jump to the original value of IRQ1V to process the
                         \ interrupt as normal
+IF _PAGING_FIX = TRUE
+
 .POSTIRQ
 
  SEI
  PHA
- LDA &F4                \ Ensure the right ROM is paged in after an IRQ, to
- STA &FE05              \ work around a bug in the OS's IRQ handler which
- PLA                    \ returns with ROM #0 paged when both the keyboard
- CLI                    \ and the 100 Hz poll service call are disabled
+ LDA #_SWRAM_BANK       \ Ensure the right ROM is paged in after an IRQ in case
+ STA &FE05              \ the paging hardware behaves differently from the way
+ PLA                    \ Electron OS 1.00 expects (e.g. ElkSD64/128)
+ CLI
 
  RTI                    \ Let's RTI once more
+
+ENDIF
 
 \ ******************************************************************************
 \
