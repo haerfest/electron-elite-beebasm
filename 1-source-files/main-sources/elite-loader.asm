@@ -1860,7 +1860,6 @@ ENDMACRO
  LDA #&0C               \ Page BASIC out and the right SWRAM bank in
  JSR VIA05
  LDA ZP_SWRAM_BANK
- STA S%+0               \ Set S%+0 to the SWRAM bank to use
  JSR VIA05
 
  LDX #LO(MESS1)         \ Set (Y X) to point to MESS1 ("LOAD EliteCp FFFF2000")
@@ -1970,6 +1969,9 @@ ENDIF
                         \ of mode 4 is &140 bytes), and then the rest of the
                         \ screen memory from &5800 to &7EBF cover the second
                         \ row and down
+
+ LDA ZP_SWRAM_BANK      \ Set S%+0 to the SWRAM bank to use
+ STA S%+0
 
  CLI                    \ Re-enable interrupts
 
