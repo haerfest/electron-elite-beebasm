@@ -2377,9 +2377,8 @@ ENDMACRO
                         \ rather than 0, so this jumps to jvec if we are already
                         \ reading the keyboard with an OS command
 
-                        \ If we get here then we are not already reading the
-                        \ keyboard using an OS command, so set bits 5 and 6 of the
- ORA #%00110000 OR _SWRAM_BANK
+ LDA &F4                \ If we get here then we are not already reading the
+ ORA #%00110000         \ keyboard using an OS command, so set bits 5 and 6 of the
  STA VIA+&05            \ interrupt clear and paging register at SHEILA &05 to
                         \ clear the RTC and screen interrupts, whichever is
                         \ pending
@@ -2412,7 +2411,7 @@ IF _PAGING_FIX = TRUE
 
  SEI
  PHA
- LDA #_SWRAM_BANK       \ Ensure the right ROM is paged in after an IRQ in case
+ LDA &F4                \ Ensure the right ROM is paged in after an IRQ in case
  STA &FE05              \ the paging hardware behaves differently from the way
  PLA                    \ Electron OS 1.00 expects (e.g. ElkSD64/128)
  CLI
