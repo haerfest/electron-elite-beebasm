@@ -56,7 +56,7 @@
  LE% = &0B00            \ LE% is the address to which the code from UU% onwards
                         \ is copied in part 3
 
- C% = &0D00             \ C% is set to the location that the main game code gets
+ C% = &2000             \ C% is set to the location that the main game code gets
                         \ moved to after it is loaded
 
  L% = &2000             \ L% is the load address of the main game code file
@@ -1897,6 +1897,8 @@ ENDMACRO
                         \ we return from any spurious NMIs that still call this
                         \ workspace)
 
+IF FALSE
+
  LDX #&4A               \ Set X = &4A, as we want to copy the &4A pages of main
                         \ game code from where we just loaded it at &2000, down
                         \ to &0D00 where we will run it
@@ -1904,6 +1906,8 @@ ENDMACRO
  LDA #HI(L%)            \ Copy from L% to C%
  LDY #HI(C%)
  JSR copy
+
+ENDIF
 
  SEI                    \ Disable all interrupts
 

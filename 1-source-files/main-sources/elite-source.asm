@@ -2262,8 +2262,8 @@ ENDMACRO
 \
 \ ******************************************************************************
 
- CODE% = &0D00
- LOAD% = &2000
+ CODE% = &2000
+ LOAD% = CODE%
 
  ORG CODE%
 
@@ -2286,7 +2286,7 @@ ENDMACRO
 
 .S%
 
- RTI                    \ The S% workspace lives at &0D00, which is the NMI
+ NOP                    \ The S% workspace lives at &0D00, which is the NMI
                         \ workspace. We claimed the NMI workspace for our own
                         \ use as part of the loading process, and the RTI makes
                         \ sure we return from any spurious NMIs that still call
