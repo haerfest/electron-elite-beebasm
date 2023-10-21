@@ -154,6 +154,10 @@
 
  SKIP 2                 \ Gets set to &03C2 as part of the obfuscation code
 
+.SWRAM_BANK
+
+ SKIP 1
+
 \ ******************************************************************************
 \
 \ ELITE LOADER
@@ -1855,7 +1859,7 @@ ENDMACRO
 
  LDA #&0C               \ Page BASIC out and the right SWRAM bank in
  JSR VIA05
- LDA #_SWRAM_BANK
+ LDA SWRAM_BANK
  JSR VIA05
 
  LDX #LO(MESS1)         \ Set (Y X) to point to MESS1 ("LOAD EliteCp FFFF2000")
@@ -1954,9 +1958,9 @@ ENDIF
  LDA S%+13
  STA IRQ1V+1
 
-                        \ Clear all interrupts (bits 4-7) by setting the
- LDA #&F0 OR _SWRAM_BANK
- STA VIA+&05            \ interrupt clear and paging register at SHEILA &05
+ LDA &F4                \ Clear all interrupts (bits 4-7) by setting the
+ ORA #&F0               \ interrupt clear and paging register at SHEILA &05
+ STA VIA+&05
 
  LDA #&60               \ Set the screen start address registers at SHEILA &02
  STA VIA+&02            \ and SHEILA &03 so screen memory starts at &7EC0. This
