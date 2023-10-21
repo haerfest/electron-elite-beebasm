@@ -1882,10 +1882,14 @@ ENDMACRO
                         \ with A = 200, X = 3 and Y = 0 to disable the ESCAPE
                         \ key and clear memory if the BREAK key is pressed
 
+IF FALSE
+
  LDA #140               \ Call OSBYTE with A = 140 and X = 12 to select the
  LDX #12                \ tape filing system (i.e. do a *TAPE command)
  LDY #0
  JSR OSBYTE
+
+ENDIF
 
  LDA #143               \ Call OSBYTE 143 to issue a paged ROM service call of
  LDX #&C                \ type &C with argument &FF, which is the "NMI claim"
