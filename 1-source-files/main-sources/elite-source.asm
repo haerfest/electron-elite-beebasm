@@ -29311,6 +29311,8 @@ ENDIF
  INC KEYB               \ Increment KEYB back to 0 to indicate we are done
                         \ reading the keyboard
 
+ JSR dn2                \ Sound a short beep to confirm success
+
  RTS                    \ Return from the subroutine
 
 \ ******************************************************************************
