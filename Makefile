@@ -29,7 +29,7 @@ build:
 	$(BEEBASM) -i 1-source-files/main-sources/elite-loader.asm -v >> 3-assembled-output/compile.txt
 	$(BEEBASM) -i 1-source-files/main-sources/elite-readme.asm -v >> 3-assembled-output/compile.txt
 	$(PYTHON) 2-build-files/elite-checksum.py -u -rel$(variant-electron)
-	$(BEEBASM) -i 1-source-files/main-sources/elite-disc.asm -do 5-compiled-game-discs/elite-electron-flicker-free$(suffix-electron).ssd -opt 3 -title "E L I T E"
+	$(BEEBASM) -i 1-source-files/main-sources/elite-disc.asm -do 5-compiled-game-discs/elite-electron-flicker-free-swram$(suffix-electron).ssd -opt 3 -title "E L I T E"
 
 .PHONY:encrypt
 encrypt:
@@ -42,7 +42,7 @@ encrypt:
 	$(BEEBASM) -i 1-source-files/main-sources/elite-loader.asm -v >> 3-assembled-output/compile.txt
 	$(BEEBASM) -i 1-source-files/main-sources/elite-readme.asm -v >> 3-assembled-output/compile.txt
 	$(PYTHON) 2-build-files/elite-checksum.py -rel$(variant-electron)
-	$(BEEBASM) -i 1-source-files/main-sources/elite-disc.asm -do 5-compiled-game-discs/elite-electron-flicker-free$(suffix-electron).ssd -opt 3 -title "E L I T E"
+	$(BEEBASM) -i 1-source-files/main-sources/elite-disc.asm -do 5-compiled-game-discs/elite-electron-flicker-free-swram$(suffix-electron).ssd -opt 3 -title "E L I T E"
 
 .PHONY:verify
 verify:
